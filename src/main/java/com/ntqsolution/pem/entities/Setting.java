@@ -14,9 +14,9 @@ import javax.persistence.Table;
 @Setter
 public class Setting {
     @Id
-    @Column(name = "key")
+    @Column(name = "key",nullable = false)
     private String key;
 
-    @Column(name = "value")
+    @Column(name = "value", nullable = false)
     private String value;
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/projects")
@@ -63,41 +64,55 @@ public class ProjectController {
         return "redirect:/projects/list";
     }
 
-    @RequestMapping(value = "/details/{id}", method = RequestMethod.GET)
-    public String detailsProject(@PathVariable("id") Long id, ModelMap model) {
-        Project project = projectService.findProjectById(id);
-        model.addAttribute("projects", project);
-        model.addAttribute("languages", languageService.getAllLanguage());
-        return "detailsProject";
-    }
+//    @RequestMapping(value = "/details/{id}", method = RequestMethod.GET)
+//    public String detailsProject(@PathVariable("id") Long id, ModelMap model) {
+//        Project project = projectService.findProjectById(id);
+//        model.addAttribute("projects", project);
+//        model.addAttribute("languages", languageService.getAllLanguage());
+//        return "detailsProject";
+//    }
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
     public String editProject(@PathVariable("id") Long id, ModelMap model) {
         Project project = projectService.findProjectById(id);
-        //List<Employee> employee = employeeService.getAvailableEmployeeForProject(project);
-        List<Language> languageList = languageService.getAllLanguage();
-//        if (project.getProjectEmployees() == null || project.getProjectEmployees().size() == 0) {
-//            model.addAttribute("projectEmployee", null);
-//        } else {
-//            model.addAttribute("projectEmployee", projectEmployeeService.getAllEmployeeByProjectId(project.getId()));
-//        }
-//        model.addAttribute("projectEm", new EmployeeProject());
-        model.addAttribute("languageList", languageList);
+        List<Employee> employee = employeeService.getAvailableEmployeeForProject(project);
+        if (project.getProjectEmployees() == null || project.getProjectEmployees().size() == 0) {
+            model.addAttribute("projectEmployee", null);
+        } else {
+            model.addAttribute("projectEmployee", projectEmployeeService.getAllEmployeeByProjectId(project.getId()));
+        }
+        model.addAttribute("projectEm", new EmployeeProject());
         model.addAttribute("project", project);
-        //model.addAttribute("employee", employee);
+        model.addAttribute("employee", employee);
         return "editProject";
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
-    public String editProject(@ModelAttribute("employee") Project project /*@ModelAttribute EmployeeProject employeeProject*/) {
-        /*employeeProject.setDateJoin(LocalDate.now());
+    public String addEmployeeToProject(@ModelAttribute EmployeeProject employeeProject) {
+        employeeProject.setDateJoin(LocalDate.now());
         EmployeeProjectKey employeeProjectKey = new EmployeeProjectKey();
         employeeProjectKey.setEmployeeID(employeeProject.getEmployee().getId());
         employeeProjectKey.setProjectID(employeeProject.getProject().getId());
         employeeProject.setId(employeeProjectKey);
-        projectEmployeeService.saveOrUpdateProjectEmployee(employeeProject);*/
+        employeeProject.getEmployee().setUpdateAt(LocalDate.now());
+        employeeProject.getProject().setUpdateAt(LocalDate.now());
+        employeeProject.setIsReject(false);
+        projectEmployeeService.saveOrUpdateProjectEmployee(employeeProject);
+        return "redirect:/projects/edit/" + employeeProject.getProject().getId();
+    }
+
+    @RequestMapping(value = "/close/{id}", method = RequestMethod.GET)
+    public String closeProject(@PathVariable("id") Long id) {
+        Project project = projectService.findProjectById(id);
+        StatusProject statusProject = statusProjectService.findStatusById(2L);
+        project.setStatus(statusProject);
+        Set<EmployeeProject> employeeProjects = project.getProjectEmployees();
+        for (EmployeeProject employeeProject : employeeProjects) {
+            employeeProject.setDateOut(LocalDate.from(LocalDate.now()));
+            employeeProject.setIsReject(true);
+            projectEmployeeService.saveOrUpdateProjectEmployee(employeeProject);
+        }
         projectService.saveOrUpdateProject(project);
-        //return "redirect:/projects/edit/" + employeeProject.getProject().getId();
         return "redirect:/projects/list";
     }
 }

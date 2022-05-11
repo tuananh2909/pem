@@ -16,24 +16,24 @@ import java.util.Set;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, length = 150)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "status_id", nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private StatusProject status;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "end_date")
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "project")
@@ -48,4 +48,8 @@ public class Project {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Language> languages = new LinkedHashSet<>();
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "update_at")
+    private LocalDate updateAt;
 }

@@ -12,8 +12,8 @@ import java.io.Serializable;
 @Setter
 public class EmployeeProjectKey implements Serializable {
     private static final long serialVersionUID = 1857575127796014083L;
-    @Column(name = "employee_id")
+    @Column(name = "employee_id", nullable = false)
     private Long employeeID;
-    @Column(name = "project_id")
+    @Column(name = "project_id", nullable = false)
     private Long projectID;
 }

@@ -16,10 +16,10 @@ import java.util.Set;
 public class StatusEmployee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "status_name")
+    @Column(name = "status_name", nullable = false, length = 50)
     private String name;
 
     @OneToMany(mappedBy = "status",fetch = FetchType.LAZY)

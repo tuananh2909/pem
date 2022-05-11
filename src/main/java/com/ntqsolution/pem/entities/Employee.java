@@ -15,27 +15,27 @@ import java.util.Set;
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "status_id", nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private StatusEmployee status;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "is_out")
+    @Column(name = "is_out", nullable = false)
     private Boolean isOut;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Role role;
@@ -52,4 +52,8 @@ public class Employee {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Language> languages = new LinkedHashSet<>();
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Column(name = "update_at")
+    private LocalDate updateAt;
 }

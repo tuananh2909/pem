@@ -13,10 +13,10 @@ import java.util.Set;
 public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "language_name")
+    @Column(name = "language_name",nullable = false, length = 50)
     private String name;
 
     @ManyToMany(mappedBy = "languages", fetch = FetchType.LAZY)
